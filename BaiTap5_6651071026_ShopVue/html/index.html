@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ZhaHue - phụ kiện công nghệ tinh gọn, chất lượng với giỏ hàng cập nhật tức thì bằng Vue 3.">
+  <meta name="theme-color" content="#ffffff">
+  <title>ZhaHue Accessories | Phụ kiện bạn cần, trải nghiệm bạn thích</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js" defer></script>
+  <script src="../js/app.js" defer></script>
+</head>
+<body class="bg-white text-slate-800 antialiased">
+  <div id="app">
+    <header class="border-b border-slate-100 bg-white">
+      <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4 lg:px-8">
+        <a class="shop-logo" href="#trang-chu" aria-label="ZhaHue Accessories, về đầu trang">
+          <span class="logo-mark" aria-hidden="true">Z</span>
+          <span><strong>ZhaHue</strong><small>TECH ACCESSORIES</small></span>
+        </a>
+        <nav class="hidden items-center gap-7 text-xs font-extrabold tracking-wide text-slate-600 md:flex" aria-label="Điều hướng chính">
+          <a class="shop-nav-link" href="#trang-chu">TRANG CHỦ</a>
+          <a class="shop-nav-link" href="#san-pham">SẢN PHẨM</a>
+          <a class="shop-nav-link" href="#uu-dai">KHUYẾN MÃI</a>
+          <a class="shop-nav-link" href="#lien-he">LIÊN HỆ</a>
+        </nav>
+        <div class="header-tools">
+          <a class="cart-shortcut" href="#gio-hang" aria-label="Đi đến giỏ hàng">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.5L22 9H7"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+            <span class="cart-count">{{ tongSoLuong }}</span>
+          </a>
+          <label class="search-box" for="product-search">
+            <span class="sr-only">Tìm kiếm sản phẩm</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg>
+            <input id="product-search" v-model.trim="tuKhoa" type="search" placeholder="Tìm sản phẩm..." autocomplete="off">
+          </label>
+        </div>
+      </div>
+    </header>
+
+    <main id="trang-chu" class="mx-auto max-w-7xl px-5 py-8 lg:px-8">
+      <div class="mb-6 flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
+        <div><p class="text-[10px] font-extrabold tracking-[.24em] text-blue-600">EVERYDAY TECH, MADE SIMPLE</p><p class="mt-1 text-xs text-slate-400">Phụ kiện tinh gọn cho cuộc sống hiện đại</p></div>
+        <p class="hidden text-xs font-semibold text-slate-400 sm:block">Miễn phí giao hàng cho đơn từ 500.000đ</p>
+      </div>
+      <div class="store-layout">
+        <section id="san-pham" class="product-section" aria-labelledby="products-heading">
+          <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+            <div><p class="section-kicker">ĐƯỢC CHỌN HÔM NAY</p><h1 id="products-heading" class="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">Phụ kiện nổi bật</h1></div>
+            <p class="text-xs font-medium text-slate-400">Hiển thị {{ danhSachLoc.length }} / {{ products.length }} sản phẩm</p>
+          </div>
+          <div v-if="danhSachLoc.length" class="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4 xl:gap-4">
+            <article v-for="product in danhSachLoc" :key="product.id" class="product-card">
+              <div class="product-image-wrap">
+                <span v-if="product.badge" class="product-badge">{{ product.badge }}</span>
+                <img :src="'../images/' + product.image" :alt="product.name" loading="lazy">
+                <button class="quick-add" type="button" :aria-label="'Thêm ' + product.name + ' vào giỏ'" @click="themVaoGio(product)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+              </div>
+              <div class="product-info">
+                <p class="product-category">{{ product.category }}</p>
+                <h2>{{ product.name }}</h2>
+                <div class="mt-auto flex items-center justify-between gap-2 pt-3">
+                  <span class="product-price">{{ dinhDangGia(product.price) }}</span>
+                  <button class="add-button" type="button" @click="themVaoGio(product)">Thêm <span aria-hidden="true">+</span></button>
+                </div>
+              </div>
+            </article>
+          </div>
+          <div v-else class="empty-search">
+            <span aria-hidden="true">⌕</span>
+            <h2>Chưa tìm thấy sản phẩm</h2>
+            <p>Thử một từ khóa khác như “ốp lưng”, “tai nghe” hoặc “sạc”.</p>
+          </div>
+        </section>
+
+        <aside id="gio-hang" class="cart-panel" aria-labelledby="cart-heading">
+          <div class="flex items-start justify-between gap-2">
+            <div><p class="section-kicker">ĐƠN HÀNG CỦA BẠN</p><h2 id="cart-heading" class="text-lg font-black text-slate-900">Giỏ hàng</h2></div>
+            <span class="cart-panel-count">{{ tongSoLuong }} món</span>
+          </div>
+          <p class="sr-only" role="status" aria-live="polite">{{ thongBao }}</p>
+          <div v-if="cart.length === 0" class="cart-empty">
+            <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M11 17h5l5 28h27l6-21H19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27" cy="53" r="3" fill="currentColor"/><circle cx="45" cy="53" r="3" fill="currentColor"/><path d="M29 32h13m-6-6v13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <p>Giỏ hàng đang trống</p><a href="#san-pham">Khám phá sản phẩm <span aria-hidden="true">→</span></a>
+          </div>
+          <ul v-else class="cart-list">
+            <li v-for="(item, index) in cart" :key="item.id" class="cart-item">
+              <img :src="'../images/' + item.image" :alt="item.name" loading="lazy">
+              <div class="min-w-0 flex-1">
+                <h3>{{ item.name }}</h3>
+                <p>{{ item.quantity }} × {{ dinhDangGia(item.price) }}</p>
+              </div>
+              <button class="remove-item" type="button" :aria-label="'Xóa ' + item.name + ' khỏi giỏ'" @click="xoaKhoiGio(index)">×</button>
+            </li>
+          </ul>
+          <div class="cart-total"><span>Tạm tính</span><strong>{{ dinhDangGia(tongTien) }}</strong></div>
+          <button class="checkout-button" type="button" :disabled="cart.length === 0" @click="hienThiThongBao">TIẾN HÀNH ĐẶT HÀNG <span aria-hidden="true">→</span></button>
+          <p class="cart-caption">Phí vận chuyển được tính khi xác nhận đơn hàng.</p>
+          <p v-if="thongBao" class="cart-notice">{{ thongBao }}</p>
+        </aside>
+      </div>
+    </main>
+
+    <section id="uu-dai" class="promo-banner">
+      <div><p class="text-[10px] font-extrabold tracking-[.25em] text-white/75">ƯU ĐÃI TUẦN NÀY</p><h2>ZHAHUE — GET 20% OFF ALL CASES!</h2><p>Thêm chút màu sắc cho chiếc điện thoại của bạn.</p></div>
+      <a href="#san-pham">KHÁM PHÁ NGAY <span aria-hidden="true">→</span></a>
+    </section>
+  </div>
+
+  <footer id="lien-he" class="shop-footer">
+    <div class="mx-auto grid max-w-7xl gap-8 px-5 py-10 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
+      <div><h2>ZhaHue <span>TECH ACCESSORIES</span></h2><p>Phụ kiện công nghệ tinh gọn, đồng hành cùng nhịp sống mỗi ngày.</p></div>
+      <div><h3>VỀ ZHAHUE</h3><a href="#trang-chu">Giới thiệu</a><a href="#lien-he">Câu hỏi thường gặp</a></div>
+      <div><h3>HỖ TRỢ</h3><a href="mailto:hello@zhahue.vn">Liên hệ hỗ trợ</a><a href="tel:0901234567">0901 234 567</a></div>
+      <div><h3>KẾT NỐI</h3><a href="https://www.instagram.com/" target="_blank" rel="noreferrer">Instagram</a><a href="https://www.facebook.com/" target="_blank" rel="noreferrer">Facebook</a></div>
+    </div>
+    <div class="mx-auto max-w-7xl border-t border-white/10 px-5 py-4 text-center text-[10px] text-slate-500 lg:px-8">© 2026 ZhaHue Accessories. Giao diện học tập minh họa Vue 3.</div>
+  </footer>
+</body>
+</html>
